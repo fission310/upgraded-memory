@@ -43,7 +43,6 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import java.util.ArrayList;
 
 import static org.firstinspires.ftc.teamcode.Auton.LED_CHANNEL;
-import static org.firstinspires.ftc.teamcode.Auton.THRESHOLD;
 import static org.firstinspires.ftc.teamcode.Auton.TURN_SPEED;
 
 /*
@@ -179,6 +178,7 @@ public class RGBTestRed extends LinearOpMode {
         }
 
         // Assumes that the sensor is reading the left side of the beacon, hits the beacon
+        /*
         double blueAvg = Auton.average(blue);
         double redAvg = Auton.average(red);
         if (blueAvg * THRESHOLD > redAvg) {
@@ -190,14 +190,17 @@ public class RGBTestRed extends LinearOpMode {
             leftFront.setPower(-FORWARD_SPEED);
             leftBack.setPower(-FORWARD_SPEED);
         }
+        */
         runtime.reset();
         while (opModeIsActive() && (runtime.seconds() < 1.0)) {
             telemetry.addData("Path", "Leg 4", runtime.seconds());
             telemetry.update();
         }
 
+        /*
         telemetry.addData("Red  ", redAvg);
         telemetry.addData("Blue ", blueAvg);
+        */
         telemetry.update();
 
         // testing

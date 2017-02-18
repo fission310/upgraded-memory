@@ -34,6 +34,7 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 /**
@@ -69,16 +70,18 @@ public class CraigLauncher extends LinearOpMode {
         DcMotor rightFront = hardwareMap.dcMotor.get("rightFront");
         DcMotor rightBack = hardwareMap.dcMotor.get("rightBack");
 
-        DcMotor slides = hardwareMap.dcMotor.get("slides");
-
-        /*
-        Servo hopper = hardwareMap.servo.get("hopper");
+        DcMotor slides1 = hardwareMap.dcMotor.get("slides1");
+        DcMotor slides2 = hardwareMap.dcMotor.get("slides2");
 
         Servo capBallRight = hardwareMap.servo.get("capBallRight");
         Servo capBallLeft = hardwareMap.servo.get("capBallLeft");
 
-        Servo rotate1 = hardwareMap.servo.get("rotate1");
-        Servo rotate2 = hardwareMap.servo.get("rotate2");
+        // DcMotor shooter = hardwareMap.dcMotor.get("shooter");
+
+        Servo rotate = hardwareMap.servo.get("rotate");
+
+        /*
+        Servo hopper = hardwareMap.servo.get("hopper");
         */
 
 
@@ -88,6 +91,10 @@ public class CraigLauncher extends LinearOpMode {
         leftBack.setDirection(DcMotor.Direction.FORWARD);
         rightFront.setDirection(DcMotor.Direction.REVERSE);// Set to FORWARD if using AndyMark motors
         rightBack.setDirection(DcMotor.Direction.REVERSE);
+
+        rotate.setPosition(0.5);
+        capBallLeft.setPosition(0);
+        capBallRight.setPosition(1);
 
         // Wait for the game to start (driver presses PLAY)
         waitForStart();
@@ -105,13 +112,11 @@ public class CraigLauncher extends LinearOpMode {
             Joysticks - drivetrain
             Linear slides down (hold)- left trigger
             Linear slides up (hold) - right trigger
-            Hopper servo (hold) - left bumper
-            Cap ball servo - right bumper
-            Cap ball down - B
-            Cap ball up - START
+            Cap ball servos - left bumper
+            Cap ball mechanism release - B
 
             OPERATOR
-            same except linear slides controlled by joysticks
+            same except no driving capability
 
              */
 
@@ -123,12 +128,24 @@ public class CraigLauncher extends LinearOpMode {
 
 
             // linear slides down
-            if (gamepad1.left_bumper) {
-                slides.setPower(-1);
-            } else if (gamepad1.right_bumper) {
-                slides.setPower(1);
+            if (gamepad1.left_trigger > 0.1 || gamepad2.left_trigger > 0.1) {
+                slides1.setPower(-1);
+                slides2.setPower(1);
+            } else if (gamepad1.right_trigger > 0.1 || gamepad2.right_trigger > 0.1) {
+                slides1.setPower(1);
+                slides2.setPower(-1);
             } else {
-                slides.setPower(0);
+                slides1.setPower(0);
+                slides2.setPower(0);
+            }
+
+            // cap ball servo
+            if (gamepad1.left_bumper || gamepad2.left_bumper) {
+                capBallLeft.setPosition(1);
+                capBallRight.setPosition(0);
+            } else {
+                capBallLeft.setPosition(0.5);
+                capBallRight.setPosition(0.5);
             }
 
             /*
@@ -138,33 +155,12 @@ public class CraigLauncher extends LinearOpMode {
             } else {
                 hopper.setPosition(0.5);
             }
-
-            // cap ball servo
-            if (gamepad1.right_bumper || gamepad2.right_bumper) {
-                capBallLeft.setPosition(0);
-                capBallRight.setPosition(1);
-            } else {
-                capBallLeft.setPosition(0.5);
-                capBallRight.setPosition(0.5);
-            }
+            */
 
             // cap ball rotate
             if (gamepad1.b || gamepad2.b) {
-                double pos1 = rotate1.getPosition();
-                double pos2 = rotate2.getPosition();
-                if (pos1 > 0 && pos2 < 1) {
-                    rotate1.setPosition(rotate1.getPosition() - 0.02);
-                    rotate2.setPosition(rotate2.getPosition() + 0.02);
-                }
-            } else if (gamepad1.start || gamepad2.start) {
-                double pos1 = rotate1.getPosition();
-                double pos2 = rotate2.getPosition();
-                if (pos2 > 0 && pos1 < 1) {
-                    rotate1.setPosition(rotate1.getPosition() + 0.02);
-                    rotate2.setPosition(rotate2.getPosition() - 0.02);
-                }
+                rotate.setPosition(1);
             }
-            */
 
         }
     }

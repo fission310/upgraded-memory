@@ -40,8 +40,6 @@ import com.qualcomm.robotcore.hardware.DeviceInterfaceModule;
 import com.qualcomm.robotcore.hardware.DigitalChannelController;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-import java.util.ArrayList;
-
 import static org.firstinspires.ftc.teamcode.Auton.CLOSE_SPEED;
 import static org.firstinspires.ftc.teamcode.Auton.COUNTS_PER_INCH;
 import static org.firstinspires.ftc.teamcode.Auton.LED_CHANNEL;
@@ -86,6 +84,8 @@ public class RGBAutonEncodersBlue extends LinearOpMode {
     DcMotor rightFront;
     DcMotor rightBack;
 
+    DcMotor shooter;
+
     ColorSensor sensorRGB;
     DeviceInterfaceModule cdim;
 
@@ -96,6 +96,9 @@ public class RGBAutonEncodersBlue extends LinearOpMode {
         leftBack = hardwareMap.dcMotor.get("leftBack");
         rightFront = hardwareMap.dcMotor.get("rightFront");
         rightBack = hardwareMap.dcMotor.get("rightBack");
+
+        // shooter = hardwareMap.dcMotor.get("shooter");
+        // shooterLeft = hardwareMap.dcMotor.get("shooterLeft");
 
         leftFront.setDirection(DcMotor.Direction.FORWARD); // Set to REVERSE if using AndyMark motors
         leftBack.setDirection(DcMotor.Direction.FORWARD);
@@ -158,7 +161,9 @@ public class RGBAutonEncodersBlue extends LinearOpMode {
         encoderDrive(Auton.TURN_SPEED,   20, -20, 3.0);  // 4
         encoderDrive(Auton.DRIVE_SPEED, 20, 20, 5.0);  // 6
         encoderDrive(Auton.CLOSE_SPEED, 10, 10, 5.0);  // 7
+        startShoot();
         String color = beaconDetect();  // 8
+        stopShoot();
         if (!color.equals(TEAM_COLOR) && !color.equals("null")) {  // 13
             sleep(5000);
             encoderDrive(CLOSE_SPEED, -3, -3, 3.0);
@@ -262,8 +267,8 @@ public class RGBAutonEncodersBlue extends LinearOpMode {
 
     private String beaconDetect() {
         runtime.reset();
-        ArrayList<Integer> blue = new ArrayList<>();
-        ArrayList<Integer> red = new ArrayList<>();
+        int[] red = new int[2];
+        int[] blue = new int[2];
 
         while (opModeIsActive() && (runtime.seconds() < 2.0))  {
 
@@ -272,20 +277,27 @@ public class RGBAutonEncodersBlue extends LinearOpMode {
 
             // send the info back to driver station using telemetry function.
             // telemetry.addData("Clear", sensorRGB.alpha());
-            red.add(sensorRGB.red());
-            blue.add(sensorRGB.blue());
-            telemetry.addData("Red  ", red);
-            telemetry.addData("Blue ", blue);
+            red[0] = sensorRGB.red();
+            blue[0] = sensorRGB.blue();
+            telemetry.addData("Red  ", red[0]);
+            telemetry.addData("Blue ", blue[0]);
 
             telemetry.update();
         }
 
-        double blueAvg = Auton.average(new ArrayList<>(blue));
-        double redAvg = Auton.average(new ArrayList<>(red));
+        red[1] = sensorRGB.red();
+        blue[1] = sensorRGB.blue();
 
-        while (blueAvg == -1 || redAvg == -1) {
-            blueAvg = Auton.average(new ArrayList<>(blue));
-            redAvg = Auton.average(new ArrayList<>(red));
+        double blueAvg;
+        double redAvg;
+
+        if (red[0] < red[1] + 5 && red[0] > red[1] - 5 &&
+                blue[0] < blue[1] + 5 && blue[0] > blue[1] - 5) {
+            blueAvg = (red[0] + red[1]) / 2;
+            redAvg = (red[0] + red[1]) / 2;
+        } else {
+            blueAvg = 0;
+            redAvg = 0;
         }
 
         if (blueAvg * THRESHOLD > redAvg) {
@@ -295,6 +307,14 @@ public class RGBAutonEncodersBlue extends LinearOpMode {
         } else {
             return "null";
         }
+    }
+
+    private void startShoot() {
+        shooter.setPower(1);
+    }
+
+    private void stopShoot() {
+        shooter.setPower(0);
     }
 
 }

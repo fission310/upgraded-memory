@@ -1,9 +1,6 @@
 package org.firstinspires.ftc.teamcode;
 
 
-import java.util.ArrayList;
-import java.util.ConcurrentModificationException;
-
 public class Auton {
 
     public static final double     COUNTS_PER_MOTOR_REV    = 1120 ;    // AndyMark 40s
@@ -20,18 +17,5 @@ public class Auton {
     public static final int LED_CHANNEL = 5;
 
     public static final double THRESHOLD = 1.3;
-
-    public static double average(ArrayList<Integer> arr) {
-        try {
-            double sum = 0;
-            for (int i : arr) {
-                sum += i;
-            }
-            return sum / arr.size();
-        } catch (ConcurrentModificationException e) {
-            e.printStackTrace();
-            return -1;
-        }
-    }
 
 }
