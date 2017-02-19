@@ -160,9 +160,7 @@ public class RGBAutonEncodersRed extends LinearOpMode {
         encoderDrive(Auton.TURN_SPEED,   -13, 13, 3.0);  // 4
         encoderDrive(Auton.DRIVE_SPEED, 25, 25, 5.0);  // 6
         encoderDrive(Auton.CLOSE_SPEED, 10, 10, 5.0);  // 7
-        startShoot();
         String color = beaconDetect();  // 8
-        stopShoot();
         if (!color.equals(TEAM_COLOR) && !color.equals("null")) {  // 13
             sleep(5000);
             encoderDrive(CLOSE_SPEED, -3, -3, 3.0);
@@ -287,17 +285,8 @@ public class RGBAutonEncodersRed extends LinearOpMode {
         red[1] = sensorRGB.red();
         blue[1] = sensorRGB.blue();
 
-        double blueAvg;
-        double redAvg;
-
-        if (red[0] < red[1] + 5 && red[0] > red[1] - 5 &&
-                blue[0] < blue[1] + 5 && blue[0] > blue[1] - 5) {
-            blueAvg = (red[0] + red[1]) / 2;
-            redAvg = (red[0] + red[1]) / 2;
-        } else {
-            blueAvg = 0;
-            redAvg = 0;
-        }
+        double blueAvg = (blue[0] + blue[1]) / 2;;
+        double redAvg = (red[0] + red[1]) / 2;;
 
         if (blueAvg * THRESHOLD > redAvg) {
             return "blue";
