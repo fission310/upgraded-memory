@@ -33,17 +33,6 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.hardware.ColorSensor;
-import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DeviceInterfaceModule;
-import com.qualcomm.robotcore.hardware.DigitalChannelController;
-import com.qualcomm.robotcore.util.ElapsedTime;
-
-import static org.firstinspires.ftc.teamcode.Auton.CLOSE_SPEED;
-import static org.firstinspires.ftc.teamcode.Auton.COUNTS_PER_INCH;
-import static org.firstinspires.ftc.teamcode.Auton.LED_CHANNEL;
-import static org.firstinspires.ftc.teamcode.Auton.THRESHOLD;
 
 /**
  * This file illustrates the concept of driving a path based on encoder counts.
@@ -72,96 +61,41 @@ import static org.firstinspires.ftc.teamcode.Auton.THRESHOLD;
  * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
  */
 
-@Autonomous(name="Pushbot: Both Beacons and Cap Ball Park RED", group="Pushbot")
-public class RGBAutonEncodersRed extends LinearOpMode {
+@Autonomous(name="CraigLauncher: Both Beacons and Cap Ball Park RED", group="CraigLauncher")
+public class RGBAutonEncodersRed extends CraigLauncherAuton {
 
     /* Declare OpMode members. */
-    public static final String TEAM_COLOR = "red";
-    private ElapsedTime     runtime = new ElapsedTime();
-
-    DcMotor leftFront;
-    DcMotor leftBack;
-    DcMotor rightFront;
-    DcMotor rightBack;
-
-    DcMotor shooter;
-
-    ColorSensor sensorRGB;
-    DeviceInterfaceModule cdim;
+    public String teamColor = "red";
 
     @Override
     public void runOpMode() {
 
-        leftFront = hardwareMap.dcMotor.get("leftFront");
-        leftBack = hardwareMap.dcMotor.get("leftBack");
-        rightFront = hardwareMap.dcMotor.get("rightFront");
-        rightBack = hardwareMap.dcMotor.get("rightBack");
-
-        // shooter = hardwareMap.dcMotor.get("shooter");
-
-        leftFront.setDirection(DcMotor.Direction.FORWARD); // Set to REVERSE if using AndyMark motors
-        leftBack.setDirection(DcMotor.Direction.FORWARD);
-        rightFront.setDirection(DcMotor.Direction.REVERSE);// Set to FORWARD if using AndyMark motors
-        rightBack.setDirection(DcMotor.Direction.REVERSE);
-
-        cdim = hardwareMap.deviceInterfaceModule.get("dim");
-
-        cdim.setDigitalChannelMode(LED_CHANNEL, DigitalChannelController.Mode.OUTPUT);
-
-        // get a reference to our ColorSensor object.
-        sensorRGB = hardwareMap.colorSensor.get("sensor_color");
-
-        // turn the LED on in the beginning, just so user will know that the sensor is active.
-        cdim.setDigitalChannelState(LED_CHANNEL, false);
-
-        // Send telemetry message to signify robot waiting;
-        telemetry.addData("Status", "Resetting Encoders");    //
-        telemetry.update();
-
-        leftFront.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        rightFront.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        leftBack.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        rightBack.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        idle();
-
-        leftFront.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        rightFront.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        leftBack.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        rightBack.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-
-        // Send telemetry message to indicate successful Encoder reset
-        telemetry.addData("Path0",  "Starting at %7d :%7d",
-                          leftFront.getCurrentPosition(),
-                          rightFront.getCurrentPosition(),
-                          leftBack.getCurrentPosition(), 
-                          rightBack.getCurrentPosition());
-        telemetry.update();
+        setup();
+        setupColor();
 
         // Wait for the game to start (driver presses PLAY)
         waitForStart();
 
-        runRoutine(false);
+        runRoutine(0);
 
         telemetry.addData("Path", "Complete");
         telemetry.update();
     }
 
-    public void runRoutine(boolean delay) {
+    public void runRoutine(long delay) {
         // Step through each leg of the path,
         // Note: Reverse movement is obtained by setting a negative distance (not speed)
         // (-,+) is turn left; (+,-) is turn right
         // Max time values are commented for each robot operation (not including delayO
 
-        if (delay) {
-            sleep(5000);
-        }
+        sleep(delay);
 
-        encoderDrive(Auton.DRIVE_SPEED,  48, 45, 5.0);  // 3
-        encoderDrive(Auton.TURN_SPEED,   -13, 13, 3.0);  // 4
-        encoderDrive(Auton.DRIVE_SPEED, 25, 25, 5.0);  // 6
-        encoderDrive(Auton.CLOSE_SPEED, 10, 10, 5.0);  // 7
+        encoderDrive(CraigLauncherAuton.DRIVE_SPEED,  48, 45, 5.0);  // 3
+        encoderDrive(CraigLauncherAuton.TURN_SPEED,   -13, 13, 3.0);  // 4
+        encoderDrive(CraigLauncherAuton.DRIVE_SPEED, 25, 25, 5.0);  // 6
+        encoderDrive(CraigLauncherAuton.CLOSE_SPEED, 10, 10, 5.0);  // 7
         String color = beaconDetect();  // 8
-        if (!color.equals(TEAM_COLOR) && !color.equals("null")) {  // 13
+        if (!color.equals(teamColor) && !color.equals("null")) {  // 13
             sleep(5000);
             encoderDrive(CLOSE_SPEED, -3, -3, 3.0);
             encoderDrive(CLOSE_SPEED, 3, 3, 3.0);
@@ -169,12 +103,12 @@ public class RGBAutonEncodersRed extends LinearOpMode {
         encoderDrive(CLOSE_SPEED, -10, -10, 3.0); // 17
 
         // ADD CHECK FOR TIME TO ENSURE WRONG BUTTON IS NOT PRESSED
-        encoderDrive(Auton.TURN_SPEED, 16, -16, 3.0);  // 18
-        encoderDrive(Auton.DRIVE_SPEED,  44,  44, 5.0);  // 21
-        encoderDrive(Auton.TURN_SPEED,   -12, 12, 3.0);  // 22
-        encoderDrive(Auton.CLOSE_SPEED, 15, 15, 3.0);  // 23
+        encoderDrive(CraigLauncherAuton.TURN_SPEED, 16, -16, 3.0);  // 18
+        encoderDrive(CraigLauncherAuton.DRIVE_SPEED,  44,  44, 5.0);  // 21
+        encoderDrive(CraigLauncherAuton.TURN_SPEED,   -12, 12, 3.0);  // 22
+        encoderDrive(CraigLauncherAuton.CLOSE_SPEED, 15, 15, 3.0);  // 23
         color = beaconDetect();  // 24
-        if (!color.equals(TEAM_COLOR) && !color.equals("null")) {  // 29
+        if (!color.equals(teamColor) && !color.equals("null")) {  // 29
             sleep(5000);
             encoderDrive(CLOSE_SPEED, -3, -3, 3.0);
             encoderDrive(CLOSE_SPEED, 3, 3, 3.0);
@@ -183,126 +117,9 @@ public class RGBAutonEncodersRed extends LinearOpMode {
 
 
         /* CAP BALL AND PARK
-        encoderDrive(Auton.TURN_SPEED,   -18, 18, 3.0);
-        encoderDrive(Auton.DRIVE_SPEED * 2, 45, 45, 5.0);
+        encoderDrive(CraigLauncherAuton.TURN_SPEED,   -18, 18, 3.0);
+        encoderDrive(CraigLauncherAuton.DRIVE_SPEED * 2, 45, 45, 5.0);
         */
-    }
-
-    /*
-     *  Method to perfmorm a relative move, based on encoder counts.
-     *  Encoders are not reset as the move is based on the current position.
-     *  Move will stop if any of three conditions occur:
-     *  1) Move gets to the desired position
-     *  2) Move runs out of time
-     *  3) Driver stops the opmode running.
-     */
-    public void encoderDrive(double speed,
-                             double leftInches, double rightInches,
-                             double timeoutS) {
-        int newLeftFrontTarget;
-        int newRightFrontTarget;
-        int newLeftBackTarget;
-        int newRightBackTarget;
-
-        // Ensure that the opmode is still active
-        if (opModeIsActive()) {
-
-            // Determine new target position, and pass to motor controller
-            newLeftFrontTarget = leftFront.getCurrentPosition() + (int)(leftInches * COUNTS_PER_INCH);
-            newRightFrontTarget = rightFront.getCurrentPosition() + (int)(rightInches * COUNTS_PER_INCH);
-            newLeftBackTarget = leftBack.getCurrentPosition() + (int)(leftInches * COUNTS_PER_INCH);
-            newRightBackTarget = rightBack.getCurrentPosition() + (int)(rightInches * COUNTS_PER_INCH);
-            leftFront.setTargetPosition(newLeftFrontTarget);
-            rightFront.setTargetPosition(newRightFrontTarget);
-            leftBack.setTargetPosition(newLeftBackTarget);
-            rightBack.setTargetPosition(newRightBackTarget);
-
-            // Turn On RUN_TO_POSITION
-            leftFront.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            rightFront.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            leftBack.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            rightBack.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-
-            // reset the timeout time and start motion.
-            runtime.reset();
-            leftFront.setPower(Math.abs(speed));
-            rightFront.setPower(Math.abs(speed));
-            leftBack.setPower(Math.abs(speed));
-            rightBack.setPower(Math.abs(speed));
-
-            // keep looping while we are still active, and there is time left, and both motors are running.
-            while (opModeIsActive() &&
-                   (runtime.seconds() < timeoutS) &&
-                   (leftFront.isBusy() && rightFront.isBusy() && leftBack.isBusy() && rightBack.isBusy())) {
-
-                // Display it for the driver.
-                telemetry.addData("Path1",  "Running to %7d :%7d", newLeftFrontTarget,  newRightFrontTarget,
-                                                                   newLeftBackTarget, newRightBackTarget);
-                telemetry.addData("Path2",  "Running at %7d :%7d",
-                                            leftFront.getCurrentPosition(),
-                                            rightFront.getCurrentPosition(),
-                                            leftBack.getCurrentPosition(),
-                                            rightBack.getCurrentPosition());
-                telemetry.update();
-            }
-
-            // Stop all motion;
-            leftFront.setPower(0);
-            rightFront.setPower(0);
-            leftBack.setPower(0);
-            rightBack.setPower(0);
-
-            // Turn off RUN_TO_POSITION
-            leftFront.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-            rightFront.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-            leftBack.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-            rightBack.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-
-            sleep(250);   // optional pause after each move
-        }
-    }
-
-    private String beaconDetect() {
-        runtime.reset();
-        int[] red = new int[2];
-        int[] blue = new int[2];
-
-        while (opModeIsActive() && (runtime.seconds() < 2.0))  {
-
-            // convert the RGB values to HSV values.
-            // Color.RGBToHSV((sensorRGB.red() * 255) / 800, (sensorRGB.green() * 255) / 800, (sensorRGB.blue() * 255) / 800, hsvValues);
-
-            // send the info back to driver station using telemetry function.
-            // telemetry.addData("Clear", sensorRGB.alpha());
-            red[0] = sensorRGB.red();
-            blue[0] = sensorRGB.blue();
-            telemetry.addData("Red  ", red[0]);
-            telemetry.addData("Blue ", blue[0]);
-
-            telemetry.update();
-        }
-
-        red[1] = sensorRGB.red();
-        blue[1] = sensorRGB.blue();
-
-        double blueAvg = (blue[0] + blue[1]) / 2;;
-        double redAvg = (red[0] + red[1]) / 2;;
-
-        if (blueAvg * THRESHOLD > redAvg) {
-            return "blue";
-        } else if (redAvg * THRESHOLD > blueAvg){
-            return "red";
-        } else {
-            return "null";
-        }
-    }
-
-    private void startShoot() {
-        shooter.setPower(1);
-    }
-
-    private void stopShoot() {
-        shooter.setPower(0);
     }
 
 }

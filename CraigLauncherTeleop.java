@@ -50,8 +50,8 @@ import com.qualcomm.robotcore.util.ElapsedTime;
  * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
  */
 
-@TeleOp(name="CraigLauncher Teleop", group="PushBot")  // @Autonomous(...) is the other common choice
-public class CraigLauncher extends LinearOpMode {
+@TeleOp(name="CraigLauncher: Teleop", group="CraigLauncher")  // @Autonomous(...) is the other common choice
+public class CraigLauncherTeleop extends LinearOpMode {
 
     /* Declare OpMode members. */
     private ElapsedTime runtime = new ElapsedTime();
@@ -92,9 +92,9 @@ public class CraigLauncher extends LinearOpMode {
         rightFront.setDirection(DcMotor.Direction.REVERSE);// Set to FORWARD if using AndyMark motors
         rightBack.setDirection(DcMotor.Direction.REVERSE);
 
-        rotate.setPosition(0.5);
-        capBallLeft.setPosition(0);
-        capBallRight.setPosition(1);
+        rotate.setPosition(0.3);
+        capBallLeft.setPosition(1);
+        capBallRight.setPosition(0);
 
         // Wait for the game to start (driver presses PLAY)
         waitForStart();
@@ -107,17 +107,14 @@ public class CraigLauncher extends LinearOpMode {
 
             /*
             Joystick Map
-
             DRIVER
             Joysticks - drivetrain
             Linear slides down (hold)- left trigger
             Linear slides up (hold) - right trigger
             Cap ball servos - left bumper
             Cap ball mechanism release - B
-
             OPERATOR
             same except no driving capability
-
              */
 
             // eg: Run wheels in tank mode (note: The joystick goes negative when pushed forwards)
@@ -144,8 +141,8 @@ public class CraigLauncher extends LinearOpMode {
                 capBallLeft.setPosition(1);
                 capBallRight.setPosition(0);
             } else {
-                capBallLeft.setPosition(0.5);
-                capBallRight.setPosition(0.5);
+                capBallLeft.setPosition(0.2);
+                capBallRight.setPosition(0.8);
             }
 
             /*
