@@ -86,9 +86,9 @@ public class AutonDefenseCapBallRed extends CraigLauncherAuton {
 
         sleep(delay);
         double dist1 = 8 * Math.sqrt(2) * 12;
-        encoderDrive(CraigLauncherAuton.CLOSE_SPEED,  dist1, dist1, 8.0);
+        encoderDrive(CraigLauncherAuton.DRIVE_SPEED,  dist1, dist1, 8.0);
         encoderDrive(CraigLauncherAuton.TURN_SPEED, 15, -15, 2.0);
-        encoderDrive(CraigLauncherAuton.CLOSE_SPEED, 72, 72, 4.0);
+        encoderDrive(CraigLauncherAuton.DRIVE_SPEED, 72, 72, 4.0);
 
     }
 

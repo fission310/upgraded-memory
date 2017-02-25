@@ -18,9 +18,8 @@ public abstract class CraigLauncherAuton extends LinearOpMode {
     public static final double     WHEEL_DIAMETER_INCHES   = 4.0 ;     // For figuring circumference
     public static final double     COUNTS_PER_INCH         = (COUNTS_PER_MOTOR_REV * DRIVE_GEAR_REDUCTION) /
                                                         (WHEEL_DIAMETER_INCHES * 3.1415);
-    public static final double     DRIVE_SPEED             = 0.35;
+    public static final double     DRIVE_SPEED             = 0.6;
     public static final double     TURN_SPEED              = 0.4;
-    public static final double     CLOSE_SPEED             = 0.6;
 
     // For detecting color
     public static final double THRESHOLD = 2;
@@ -34,7 +33,8 @@ public abstract class CraigLauncherAuton extends LinearOpMode {
     protected DcMotor rightFront;
     protected DcMotor rightBack;
 
-    protected DcMotor shooter;
+    protected DcMotor shooter1;
+    protected DcMotor shooter2;
 
     protected ColorSensor sensorRGB;
     protected DeviceInterfaceModule cdim;
@@ -62,7 +62,8 @@ public abstract class CraigLauncherAuton extends LinearOpMode {
         rightFront = hardwareMap.dcMotor.get("rightFront");
         rightBack = hardwareMap.dcMotor.get("rightBack");
 
-        // shooter = hardwareMap.dcMotor.get("shooter");
+        // shooter1 = hardwareMap.dcMotor.get("shooter1");
+        // shooter2 = hardwareMap.dcMotor.get("shooter2");
 
         leftFront.setDirection(DcMotor.Direction.FORWARD); // Set to REVERSE if using AndyMark motors
         leftBack.setDirection(DcMotor.Direction.FORWARD);
@@ -106,6 +107,11 @@ public abstract class CraigLauncherAuton extends LinearOpMode {
     }
 
 
+    private double getVoltage() {
+        double voltage = hardwareMap.voltageSensor.get("right").getVoltage();
+        return voltage;
+    }
+
     /*
      *  Method to perfmorm a relative move, based on encoder counts.
      *  Encoders are not reset as the move is based on the current position.
@@ -122,14 +128,16 @@ public abstract class CraigLauncherAuton extends LinearOpMode {
         int newLeftBackTarget;
         int newRightBackTarget;
 
+        double swerve = (getVoltage() - 10) * .01 + 1;
+
         // Ensure that the opmode is still active
         if (opModeIsActive()) {
 
             // Determine new target position, and pass to motor controller
             newLeftFrontTarget = leftFront.getCurrentPosition() + (int)(leftInches * COUNTS_PER_INCH);
-            newRightFrontTarget = rightFront.getCurrentPosition() + (int)(rightInches * COUNTS_PER_INCH);
+            newRightFrontTarget = rightFront.getCurrentPosition() + (int)(rightInches * COUNTS_PER_INCH * swerve);
             newLeftBackTarget = leftBack.getCurrentPosition() + (int)(leftInches * COUNTS_PER_INCH);
-            newRightBackTarget = rightBack.getCurrentPosition() + (int)(rightInches * COUNTS_PER_INCH);
+            newRightBackTarget = rightBack.getCurrentPosition() + (int)(rightInches * COUNTS_PER_INCH * swerve);
             leftFront.setTargetPosition(newLeftFrontTarget);
             rightFront.setTargetPosition(newRightFrontTarget);
             leftBack.setTargetPosition(newLeftBackTarget);
@@ -144,9 +152,9 @@ public abstract class CraigLauncherAuton extends LinearOpMode {
             // reset the timeout time and start motion.
             runtime.reset();
             leftFront.setPower(Math.abs(speed));
-            rightFront.setPower(Math.abs(speed));
+            rightFront.setPower(Math.abs(speed) * swerve);
             leftBack.setPower(Math.abs(speed));
-            rightBack.setPower(Math.abs(speed));
+            rightBack.setPower(Math.abs(speed) * swerve);
 
             // keep looping while we are still active, and there is time left, and both motors are running.
             while (opModeIsActive() &&
@@ -154,6 +162,7 @@ public abstract class CraigLauncherAuton extends LinearOpMode {
                     (leftFront.isBusy() && rightFront.isBusy() && leftBack.isBusy() && rightBack.isBusy())) {
 
                 // Display it for the driver.
+                /*
                 telemetry.addData("Path1",  "Running to %7d :%7d", newLeftFrontTarget,  newRightFrontTarget,
                         newLeftBackTarget, newRightBackTarget);
                 telemetry.addData("Path2",  "Running at %7d :%7d",
@@ -162,6 +171,7 @@ public abstract class CraigLauncherAuton extends LinearOpMode {
                         leftBack.getCurrentPosition(),
                         rightBack.getCurrentPosition());
                 telemetry.update();
+                */
             }
 
             // Stop all motion;
@@ -181,11 +191,13 @@ public abstract class CraigLauncherAuton extends LinearOpMode {
     }
 
     protected void startShoot() {
-        shooter.setPower(1);
+        shooter1.setPower(1);
+        shooter2.setPower(1);
     }
 
     protected void stopShoot() {
-        shooter.setPower(0);
+        shooter1.setPower(0);
+        shooter2.setPower(0);
     }
 
     protected String beaconDetect() {

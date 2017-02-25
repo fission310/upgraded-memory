@@ -61,17 +61,13 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
  * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
  */
 
-@Autonomous(name="CraigLauncher: Both Beacons and Cap Ball Park RED", group="CraigLauncher")
-public class RGBAutonEncodersRed extends CraigLauncherAuton {
-
-    /* Declare OpMode members. */
-    public String teamColor = "red";
+@Autonomous(name="CraigLauncher: Cap Ball Park", group="CraigLauncher")
+public class AutonCapBallPark extends CraigLauncherAuton {
 
     @Override
     public void runOpMode() {
 
         setup();
-        setupColor();
 
         // Wait for the game to start (driver presses PLAY)
         waitForStart();
@@ -89,35 +85,8 @@ public class RGBAutonEncodersRed extends CraigLauncherAuton {
         // Max time values are commented for each robot operation (not including delayO
 
         sleep(delay);
+        encoderDrive(CraigLauncherAuton.DRIVE_SPEED,  60, 60, 10.0);
 
-        encoderDrive(CraigLauncherAuton.DRIVE_SPEED,  25, 25, 5.0);  // 3
-        encoderDrive(CraigLauncherAuton.TURN_SPEED,   -6, 6, 3.0);  // 4
-        encoderDrive(CraigLauncherAuton.DRIVE_SPEED,  23, 23, 3.0);
-        encoderDrive(CraigLauncherAuton.TURN_SPEED,   -8, 8, 3.0);  // 4
-        encoderDrive(CraigLauncherAuton.DRIVE_SPEED, 25, 25, 5.0);  // 6
-        String color = beaconDetect();  // 8
-        if (!color.equals(teamColor) && !color.equals("null")) {  // 13
-            sleep(5000);
-            encoderDrive(DRIVE_SPEED, -3, -3, 3.0);
-            encoderDrive(DRIVE_SPEED, 4, 4, 3.0);
-        }
-        encoderDrive(DRIVE_SPEED, -10, -10, 3.0); // 17
-
-        // ADD CHECK FOR TIME TO ENSURE WRONG BUTTON IS NOT PRESSED
-        encoderDrive(CraigLauncherAuton.TURN_SPEED, 15, -15, 3.0);  // 18
-        encoderDrive(CraigLauncherAuton.DRIVE_SPEED,  50,  50, 5.0);  // 21
-        encoderDrive(CraigLauncherAuton.TURN_SPEED,   -15, 15, 3.0);  // 22
-        encoderDrive(CraigLauncherAuton.DRIVE_SPEED, 15, 15, 3.0);  // 23
-        color = beaconDetect();  // 24
-        if (!color.equals(teamColor) && !color.equals("null")) {  // 29
-            sleep(5000);
-            encoderDrive(DRIVE_SPEED, -3, -3, 3.0);
-            encoderDrive(DRIVE_SPEED, 4, 4, 3.0);
-        }
-        encoderDrive(DRIVE_SPEED, -10, -10, 3.0);  // 30
-
-        encoderDrive(CraigLauncherAuton.TURN_SPEED,   -24, 24, 3.0);
-        encoderDrive(CraigLauncherAuton.DRIVE_SPEED, 65, 65, 5.0);
     }
 
 }

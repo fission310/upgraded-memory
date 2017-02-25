@@ -55,6 +55,9 @@ public class CraigLauncherTeleop extends LinearOpMode {
 
     /* Declare OpMode members. */
     private ElapsedTime runtime = new ElapsedTime();
+    private boolean slowDrive = false;
+    private boolean slowDriveDebounce = false;
+    private double slowSpeed = 0.5;
 
     @Override
     public void runOpMode() {
@@ -76,7 +79,7 @@ public class CraigLauncherTeleop extends LinearOpMode {
         Servo capBallRight = hardwareMap.servo.get("capBallRight");
         Servo capBallLeft = hardwareMap.servo.get("capBallLeft");
 
-        // DcMotor shooter = hardwareMap.dcMotor.get("shooter");
+        DcMotor shooter1 = hardwareMap.dcMotor.get("shooter1");
 
         Servo rotate = hardwareMap.servo.get("rotate");
 
@@ -92,7 +95,7 @@ public class CraigLauncherTeleop extends LinearOpMode {
         rightFront.setDirection(DcMotor.Direction.REVERSE);// Set to FORWARD if using AndyMark motors
         rightBack.setDirection(DcMotor.Direction.REVERSE);
 
-        rotate.setPosition(0.3);
+        rotate.setPosition(0.1);
         capBallLeft.setPosition(1);
         capBallRight.setPosition(0);
 
@@ -111,17 +114,26 @@ public class CraigLauncherTeleop extends LinearOpMode {
             Joysticks - drivetrain
             Linear slides down (hold)- left trigger
             Linear slides up (hold) - right trigger
-            Cap ball servos - left bumper
+            Cap ball servos (hold) - left bumper
             Cap ball mechanism release - B
+            Shooter (hold) - A
+            Slow drive - X
             OPERATOR
             same except no driving capability
              */
 
             // eg: Run wheels in tank mode (note: The joystick goes negative when pushed forwards)
-            leftFront.setPower(-gamepad1.left_stick_y);
-            leftBack.setPower(-gamepad1.left_stick_y);
-            rightFront.setPower(-gamepad1.right_stick_y);
-            rightBack.setPower(-gamepad1.right_stick_y);
+            if (slowDrive) {
+                leftFront.setPower(-gamepad1.left_stick_y * slowSpeed);
+                leftBack.setPower(-gamepad1.left_stick_y * slowSpeed);
+                rightFront.setPower(-gamepad1.right_stick_y * slowSpeed);
+                rightBack.setPower(-gamepad1.right_stick_y * slowSpeed);
+            } else {
+                leftFront.setPower(-gamepad1.left_stick_y);
+                leftBack.setPower(-gamepad1.left_stick_y);
+                rightFront.setPower(-gamepad1.right_stick_y);
+                rightBack.setPower(-gamepad1.right_stick_y);
+            }
 
 
             // linear slides down
@@ -138,11 +150,11 @@ public class CraigLauncherTeleop extends LinearOpMode {
 
             // cap ball servo
             if (gamepad1.left_bumper || gamepad2.left_bumper) {
+                capBallLeft.setPosition(0);
+                capBallRight.setPosition(1);
+            } else {
                 capBallLeft.setPosition(1);
                 capBallRight.setPosition(0);
-            } else {
-                capBallLeft.setPosition(0.2);
-                capBallRight.setPosition(0.8);
             }
 
             /*
@@ -156,7 +168,24 @@ public class CraigLauncherTeleop extends LinearOpMode {
 
             // cap ball rotate
             if (gamepad1.b || gamepad2.b) {
-                rotate.setPosition(1);
+                rotate.setPosition(0.7);
+            }
+
+            // shooter
+            if (gamepad1.a || gamepad2.a) {
+                shooter1.setPower(1);
+            } else {
+                shooter1.setPower(0);
+            }
+
+            // slow drive
+            if (gamepad1.x || gamepad2.x) {
+                slowDriveDebounce = true;
+            } else {
+                if (slowDriveDebounce) {
+                    slowDrive = !slowDrive;
+                    slowDriveDebounce = false;
+                }
             }
 
         }

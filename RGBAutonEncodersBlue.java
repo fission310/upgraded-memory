@@ -90,36 +90,34 @@ public class RGBAutonEncodersBlue extends CraigLauncherAuton {
 
         sleep(delay);
 
-        encoderDrive(CraigLauncherAuton.DRIVE_SPEED,  45, 55, 5.0);  // 3
-        encoderDrive(CraigLauncherAuton.TURN_SPEED,   20, -20, 3.0);  // 4
-        encoderDrive(CraigLauncherAuton.DRIVE_SPEED, 20, 20, 5.0);  // 6
-        encoderDrive(CraigLauncherAuton.CLOSE_SPEED, 10, 10, 5.0);  // 7
+        encoderDrive(CraigLauncherAuton.DRIVE_SPEED,  25, 25, 5.0);  // 3
+        encoderDrive(CraigLauncherAuton.TURN_SPEED,   7, -7, 3.0);  // 4
+        encoderDrive(CraigLauncherAuton.DRIVE_SPEED,  23, 23, 3.0);
+        encoderDrive(CraigLauncherAuton.TURN_SPEED,   10, -10, 3.0);  // 4
+        encoderDrive(CraigLauncherAuton.DRIVE_SPEED, 25, 25, 5.0);  // 6
         String color = beaconDetect();  // 8
         if (!color.equals(teamColor) && !color.equals("null")) {  // 13
             sleep(5000);
-            encoderDrive(CLOSE_SPEED, -3, -3, 3.0);
-            encoderDrive(CLOSE_SPEED, 3, 3, 3.0);
+            encoderDrive(DRIVE_SPEED, -3, -3, 3.0);
+            encoderDrive(DRIVE_SPEED, 4, 4, 3.0);
         }
-        encoderDrive(CLOSE_SPEED, -10, -10, 3.0); // 17
+        encoderDrive(DRIVE_SPEED, -10, -10, 3.0); // 17
 
         // ADD CHECK FOR TIME TO ENSURE WRONG BUTTON IS NOT PRESSED
-        encoderDrive(CraigLauncherAuton.TURN_SPEED, -14, 14, 3.0);  // 18
-        encoderDrive(CraigLauncherAuton.DRIVE_SPEED,  44,  44, 5.0);  // 21
-        encoderDrive(CraigLauncherAuton.TURN_SPEED,   15, -15, 3.0);  // 22
-        encoderDrive(CraigLauncherAuton.CLOSE_SPEED, 15, 15, 3.0);  // 23
+        encoderDrive(CraigLauncherAuton.TURN_SPEED, -17, 17, 3.0);  // 18
+        encoderDrive(CraigLauncherAuton.DRIVE_SPEED,  46,  46, 5.0);  // 21
+        encoderDrive(CraigLauncherAuton.TURN_SPEED,   17, -17, 3.0);  // 22
+        encoderDrive(CraigLauncherAuton.DRIVE_SPEED, 15, 15, 3.0);  // 23
         color = beaconDetect();  // 24
         if (!color.equals(teamColor) && !color.equals("null")) {  // 29
             sleep(5000);
-            encoderDrive(CLOSE_SPEED, -3, -3, 3.0);
-            encoderDrive(CLOSE_SPEED, 3, 3, 3.0);
+            encoderDrive(DRIVE_SPEED, -3, -3, 3.0);
+            encoderDrive(DRIVE_SPEED, 4, 4, 3.0);
         }
-        encoderDrive(CLOSE_SPEED, -3, -3, 3.0);  // 30
+        encoderDrive(DRIVE_SPEED, -10, -10, 3.0);  // 30
 
-
-        /* CAP BALL AND PARK
-        encoderDrive(CraigLauncherAuton.TURN_SPEED,   18, -18, 3.0);
-        encoderDrive(CraigLauncherAuton.DRIVE_SPEED * 2, 45, 45, 5.0);
-        */
+        encoderDrive(CraigLauncherAuton.TURN_SPEED,   25, -25, 3.0);
+        encoderDrive(CraigLauncherAuton.DRIVE_SPEED, 60, 60, 5.0);
     }
 
 }

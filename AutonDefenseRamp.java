@@ -85,7 +85,7 @@ public class AutonDefenseRamp extends CraigLauncherAuton {
         // Max time values are commented for each robot operation (not including delayO
 
         sleep(delay);
-        encoderDrive(CraigLauncherAuton.CLOSE_SPEED,  144, 144, 10.0);
+        encoderDrive(CraigLauncherAuton.DRIVE_SPEED,  110, 110, 10.0);
 
     }
 
