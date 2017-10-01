@@ -20,8 +20,3 @@ With help from our programmers, Joe Suzuki and Matthew Chan
 | VuforiaTest\*           | Test CV program                                                                                              |
 
 **Note:** \* denotes work in progress or incomplete
-
-<br>
-### TODO
- - Update in-file comments
- - Rename files using naming convention
