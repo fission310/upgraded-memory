@@ -1,4 +1,4 @@
-# upgraded-memory
+# velocity-vortex
 Stuy Fission 310<br>
 First Tech Challenge Velocity Vortex '16-'17 Robot Code<br>
 Written and maintained by Ryan Siu<br>
